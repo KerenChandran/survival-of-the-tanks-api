@@ -79,10 +79,15 @@ io.on('connection', function (socket) {
   });
 
 
-  socket.on('playerShoot', function () {
+  socket.on('playerShoot', function (data) {
+    console.log("data: ", data);
+    console.log("JSON.stringify(data): ", JSON.stringify(data));
+
     var data = {
-      name: currentPlayer.name
+      name: currentPlayer.name,
+      launchForce: data.launchForce
     }
+    console.log("currentPlayer: ", currentPlayer);
 
     console.log('PlayerShoot triggered by: ', JSON.stringify(currentPlayer));
 
