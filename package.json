@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Keren Chandran, Ursula Huang",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "express": "^4.15.2",
     "socket.io": "^1.7.3"
