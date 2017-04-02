@@ -8,13 +8,16 @@ server.listen(port);
 
 var playerSpawnPoints = [{
   position: [-3, 0, 30],
-  rotation: 180
+  rotation: 180,
+  playerColor: '#3E6CC5'
 }, {
   position: [13, 0, -5],
-  rotation: 0
+  rotation: 0,
+  playerColor: '#DD2525'
 }, {
   position: [12, 0, 40],
-  rotation: 0
+  rotation: 0,
+  playerColor: '#7ECE40'
 }];
 var clients = [];
 var i = 0;
@@ -38,7 +41,8 @@ io.on('connection', function (socket) {
         name: clients[i].name,
         position: clients[i].position,
         rotation: clients[i].rotation,
-        health: clients[i].health
+        health: clients[i].health,
+        playerColor: clients[i].playerColor
       };
 
       socket.emit('playerConnected', playerConnected);
@@ -55,7 +59,8 @@ io.on('connection', function (socket) {
       name: data.name,
       position: spawnPoint.position,
       rotation: spawnPoint.rotation,
-      health: 100
+      health: 100,
+      playerColor: spawnPoint.playerColor
     };
     clients.push(currentPlayer);
 
