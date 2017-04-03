@@ -1,6 +1,7 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var _ = require('lodash');
 
 var port = process.env.PORT || 3000;
 var ROOM_SIZE = 4;
@@ -71,6 +72,7 @@ io.on('connection', function (socket) {
     // Iterate through list of activeClients to let new player know the position of the other activeClients
     for (var i = 0; i < clients.length; i++) {
       var playerConnected = {
+        id: clients[i].id,
         name: clients[i].name,
         position: clients[i].position,
         rotation: clients[i].rotation,
@@ -89,14 +91,15 @@ io.on('connection', function (socket) {
 
     var room = findRoom(data.roomId);
 
-    var spawnPoint = playerSpawnPoints[room.spawnPointIndex];
-    room.spawnPointIndex++;
-
-    if (room.spawnPointIndex > 3) {
+    if (room.spawnPointIndex >= ROOM_SIZE) {
       return;
     }
 
+    var spawnPoint = playerSpawnPoints[room.spawnPointIndex];
+    room.spawnPointIndex++;
+
     currentPlayer = {
+      id: _.uniqueId(),
       name: data.name,
       position: spawnPoint.position,
       rotation: spawnPoint.rotation,
@@ -132,6 +135,7 @@ io.on('connection', function (socket) {
     console.log("JSON.stringify(data): ", JSON.stringify(data));
 
     var data = {
+      id: currentPlayer.id,
       name: currentPlayer.name,
       launchForce: data.launchForce
     }
@@ -145,15 +149,16 @@ io.on('connection', function (socket) {
 
   socket.on('playerHealth', function (data) {
     // Only the person who fired the bullet will update the other client's health
-    if (data.from === currentPlayer.name) {
+    if (data.from === currentPlayer.id) {
       var updatedInfo = 0;
 
       var room = findRoom(currentPlayer.roomId);
 
       room.clients = room.clients.map(function (client) {
-        if (client.name === data.name) {
+        if (client.id === data.id) {
           client.health -= data.healthChange;
           updatedInfo = {
+            id: client.id,
             name: client.name,
             health: client.health
           };
