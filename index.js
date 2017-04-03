@@ -89,12 +89,12 @@ io.on('connection', function (socket) {
 
     var room = findRoom(data.roomId);
 
-    var spawnPoint = playerSpawnPoints[room.spawnPointIndex];
-    room.spawnPointIndex++;
-
-    if (room.spawnPointIndex > 3) {
+    if (room.spawnPointIndex >= ROOM_SIZE) {
       return;
     }
+
+    var spawnPoint = playerSpawnPoints[room.spawnPointIndex];
+    room.spawnPointIndex++;
 
     currentPlayer = {
       name: data.name,
